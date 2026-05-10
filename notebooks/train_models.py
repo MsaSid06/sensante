@@ -125,14 +125,44 @@ print ( f" Classes : {list(model_loaded.classes_)}")
 
 
 # Un nouveau patient arrive au centre de sante de Medina
+# nouveau_patient = {
+# 'age': 28 ,
+# 'sexe': 'F',
+# 'temperature': 39.5 ,
+# 'tension_sys': 110 ,
+# 'toux': True ,
+# 'fatigue': True ,
+# 'maux_tete': True ,
+# 'region': 'Dakar'
+# }
+# nouveau_patient = {
+# 'age': 48 ,
+# 'sexe': 'M',
+# 'temperature': 36.5 ,
+# 'tension_sys': 120 ,
+# 'toux': True ,
+# 'fatigue': True ,
+# 'maux_tete': False ,
+# 'region': 'Dakar'
+# }
+# nouveau_patient = {
+# 'age': 8 ,
+# 'sexe': 'F',
+# 'temperature': 40.5 ,
+# 'tension_sys': 80 ,
+# 'toux': False ,
+# 'fatigue': False ,
+# 'maux_tete': True ,
+# 'region': 'Dakar'
+# }
 nouveau_patient = {
-'age': 28 ,
+'age': 79 ,
 'sexe': 'F',
-'temperature': 39.5 ,
-'tension_sys': 110 ,
+'temperature': 40 ,
+'tension_sys': 99,
 'toux': True ,
 'fatigue': True ,
-'maux_tete': True ,
+'maux_tete': False ,
 'region': 'Dakar'
 }
 # Encoder les valeurs categoriques
@@ -161,3 +191,8 @@ print ( f"\nProbabilites par classe :")
 for classe,proba in zip(model_loaded.classes_,probas ):
     bar = '#' * int ( proba * 30)
     print ( f" { classe :8s} : { proba :.1%} { bar}")
+
+
+importances = model.feature_importances_
+for name , imp in sorted (zip( feature_cols , importances ) ,key = lambda x : x [1] , reverse = True ):
+    print ( f" { name :20s} : {imp :.3f}")
