@@ -2,6 +2,10 @@
 # API FastAPI pour SenSante - Assistant pré-diagnostic médical
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
+import joblib
+import numpy as np
 
 # Créer l'application
 app = FastAPI(
@@ -10,7 +14,15 @@ app = FastAPI(
     version="0.2.0"
 )
 
-from pydantic import BaseModel, Field
+# Autoriser les requêtes depuis le frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # En dev : tout accepter
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # --- Schemas Pydantic ---
 
@@ -77,8 +89,6 @@ class DiagnosticOutput(BaseModel):
 
 
 
-import joblib
-import numpy as np
 
 # --- Charger le modèle et les encodeurs au démarrage ---
 
@@ -207,5 +217,13 @@ def predict(patient: PatientInput):
     )
 
 
-
+@app.get("/model-info")
+def model_info():
+    """Informations sur le modèle chargé."""
+    return {
+        "type": str(type(model).__name__),
+        "n_estimators": getattr(model, "n_estimators", None),
+        "classes": model.classes_.tolist() if hasattr(model, "classes_") else None,
+        "nombre_features": model.n_features_in_ if hasattr(model, "nombre_features_in_") else None
+    }
 
